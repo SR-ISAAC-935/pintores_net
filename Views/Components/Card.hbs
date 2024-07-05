@@ -1,0 +1,13 @@
+<article class="card">
+    <div class="card-body">
+        <p>{{items.origin}}</p>
+        <p>{{items.shortUrl}}</p>
+        <a href="/editar/{{items._id}}" class="btn btn-warning">editar</a>
+        <a href="/eliminar/{{items._id}}" class="btn btn-danger">eliminar</a>
+        <button data-short="{{items.shortUrl}}" class="btn btn-info">copiar</button>
+        <br>
+        <textarea name="comentArea"></textarea>
+        <button id="commentButton" class="btn btn-success">Comentar</button>
+        <div id="commentsContainer"></div> <!-- Contenedor para los comentarios -->
+    </div>
+</article>
