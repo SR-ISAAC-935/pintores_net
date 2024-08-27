@@ -15,8 +15,9 @@ const urlValidator= (req,res,next)=>
             }
 
     } catch (error) {
+        req.flash("mensajes",[{msg:error.message}])
         res.redirect('/')
-        console.log(error)
+    
     }
 
 }

@@ -2,21 +2,40 @@ const Publics= require('../models/Postings')
 const xid= require('xid-js')
 const leerPublicaciones = async(req,res)=>
     {
+        console.log(req.user)
         const urls = await Publics.find().lean();
 
-        res.render('home',{urls:urls})
+       return  res.render('home',{urls:urls})
+    }
+
+    const leermispublicaciones= async(req,res)=>{
+        try {
+            console.log(req.user); // Asegúrate de que req.user esté definido
+    
+            // Encuentra las publicaciones del usuario
+            const urls = await Publics.find({ user:req.user.id}).lean();
+            
+            console.log(res.json({urls:urls})); // Verifica lo que está retornando la consulta
+            
+            // Renderiza la vista con las URLs encontradas
+           // res.render('profile', { urls: urls });
+      } catch (error) {
+        req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
+      }
     }
 const agregarPost= async(req,res)=>{
 
     const {origin}= req.body;
     try {
-        const public=new Publics({origin:origin, shortUrl:xid.next()})
+        const public=new Publics({origin:origin, shortUrl:xid.next(), user :req.user.id})
         console.log(public);
         await public.save();
         console.log('enviado')
         res.redirect('/')
     } catch (error) {
-        console.log(error)
+       req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
     }
 }
 const eliminarPost = async(req,res)=>{
@@ -27,7 +46,9 @@ const eliminarPost = async(req,res)=>{
        console.log(resp)
         res.redirect('/');
     } catch (error) {
-        console.log(error  )
+        
+       req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
     }
 }
 const editarPostForm = async(req,res)=>{
@@ -36,7 +57,9 @@ const editarPostForm = async(req,res)=>{
         const publics= await Publics.findById(id).lean();
         res.render('home',{publics})
     } catch (error) {
-        console.log(error)
+        
+       req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
     }
 }
 const editarPosting= async(req,res)=>{
@@ -46,7 +69,9 @@ const editarPosting= async(req,res)=>{
         await Publics.findByIdAndUpdate(id,{origin})
         res.redirect('/')
     } catch (error) {
-        console.log(error)
+        
+       req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
     }
 }
 const redirecting= async (req,res)=>{
@@ -58,6 +83,9 @@ const redirecting= async (req,res)=>{
         res.redirect(url.origin)
     } catch (error) {
         
+       req.flash("mensajes",[{msg:error.message}]);
+       return res.redirect('/');
+        
     }
 }
 module.exports={
@@ -66,5 +94,6 @@ module.exports={
     eliminarPost,
     editarPostForm,
     editarPosting,
-    redirecting
+    redirecting,
+    leermispublicaciones,
 };

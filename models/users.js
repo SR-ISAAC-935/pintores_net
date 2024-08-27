@@ -27,6 +27,7 @@ const userSchema=Schema({
         default:false
     }
 })
+
  userSchema.pre('save' , async function(next){
 
     const user=this;
@@ -43,4 +44,7 @@ const userSchema=Schema({
     }
     console.log(user)
 })
+userSchema.methods.comparePassword=async function(password){
+    return await bcrypt.compare(password,this.password)
+}
 module.exports=mongoose.model('User',userSchema)

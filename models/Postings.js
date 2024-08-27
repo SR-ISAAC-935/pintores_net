@@ -21,9 +21,14 @@ const publicSchema=Schema({
             author: "string",   // Name or identifier of the commenter (optional)
             timestamp: "string"  // Time comment was posted (optional)
           }
-        ]
-    
+        ],
+    user:{
+    type:Schema.Types.ObjectId,
+    ref:"User",
+    required:true
+}
 })
+
 const Publics=mongoose.model('publicSchema',publicSchema)
 
 module.exports=Publics;
