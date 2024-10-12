@@ -1,0 +1,10 @@
+<h1>Sugerencias de Usuarios</h1>
+
+<!-- Mostrar sugerencias de usuarios -->
+<div class="sugerencias">
+    {{#each usuarios}}
+        {{> usersCards this}} <!-- Envía el usuario completo al partial `usersCards` -->
+    {{else}}
+        <p>No se encontraron usuarios que coincidan con la búsqueda.</p>
+    {{/each}}
+</div>

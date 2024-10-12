@@ -1,15 +1,8 @@
-console.log('hola aqui estoy en el frontend')
-
-document.addEventListener('click', (e) =>{
-    
-    if(e.target.dataset.short)
-        {
-            const url= `http://localhost:5001/${e.target.dataset.short}`
-            navigator.clipboard.writeText(url)
-            .then(()=>{
-                console.log('copiado al portapapeles')
-            }).catch((err)=>{
-                console.log(`error al copiar ${err}`)
-            })
-        }   
-})
+console.log('hola desde el backend')
+ // Ocultar mensajes después de 3 segundos (3000 milisegundos)
+ setTimeout(function() {
+    const flashMessages = document.getElementById('flash-messages');
+    if (flashMessages) {
+        flashMessages.style.display = 'none';
+    }
+}, 3000);

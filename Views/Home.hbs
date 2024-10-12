@@ -1,7 +1,20 @@
-<h1>hola desde home</h1>
+
 
 {{>Formulario}}
+{{#if successMessage}}
+        <script>
+            document.getElementById('successPopup').style.display = 'block';
+            document.getElementById('popupMessage').textContent = '{{successMessage}}';
+        </script>
+    {{/if}}
 
+    {{#if errorMessage}}
+        <script>
+            document.getElementById('errorPopup').style.display = 'block';
+            document.getElementById('errorMessage').textContent = '{{errorMessage}}';
+        </script>
+    {{/if}}
 {{#each urls}}
 {{> Card items=this}}
 {{/each}}
+

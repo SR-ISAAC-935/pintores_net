@@ -1,34 +1,29 @@
-const mongoose= require('mongoose')
-const {Schema}= mongoose;
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const publicSchema=Schema({
-    
-        origin: {
-            type:String,
-            unique:true,
-            required:true
-        },       // Source of the content (e.g., website URL)
-        shortUrl:{
-            type:String,
-            unique:true,
-            required:true,
-            default:""
-        },    // Shortened URL of the content
-        comments: [           // Array of comments (optional)
-          {
-            id:Number,
-            content: "string",  // Text of the comment
-            author: "string",   // Name or identifier of the commenter (optional)
-            timestamp: "string"  // Time comment was posted (optional)
-          }
-        ],
-    user:{
-    type:Schema.Types.ObjectId,
-    ref:"User",
-    required:true
-}
-})
+const publicSchema = Schema({
+  name: {
+    type: [String], // Cambiar a un arreglo de cadenas
+    required: true,
+    validate: {
+      validator: function (v) {
+        return v.length > 0; // Asegúrate de que el arreglo no esté vacío
+      },
+      message: 'El campo name debe contener al menos un nombre.'
+    }
+  },
+  Imagen: [{
+    type: String,
+    required: true
+  }],
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    index: true // Create an index on the user field for faster querying
+  }
+});
 
-const Publics=mongoose.model('publicSchema',publicSchema)
+const Publics = mongoose.model('Publics', publicSchema); // Cambié 'publicSchema' a 'Publics'
 
-module.exports=Publics;
+module.exports = Publics;

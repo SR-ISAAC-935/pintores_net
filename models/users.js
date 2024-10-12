@@ -25,6 +25,14 @@ const userSchema=Schema({
     {
         type:Boolean,
         default:false
+    },
+    telefono:{
+        type:String,
+        required:true
+    },
+    foto:{
+        type:String,
+        default:null
     }
 })
 

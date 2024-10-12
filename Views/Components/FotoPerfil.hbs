@@ -1,0 +1,17 @@
+<div class="my-5 text-center">
+  {{#if imagen}}
+    <!-- Muestra la imagen del usuario si existe -->
+    <img src="/Perfiles/fotodinamica/{{imagen}}" alt="Imagen de perfil">
+  {{else}}
+    <!-- Muestra la imagen por defecto si no hay una imagen subida -->
+    <img src="/Perfiles/fotosdinamicas/Profile-PNG-Images.png" alt="Imagen por defecto">
+  {{/if}}
+</div>
+
+
+<form action="/updateProfile" style="margin: 70px 0;" method="post" enctype="multipart/form-data">
+  <label for="formFile" class="form-label">Sube tu imagen</label>
+  <input class="form-control" type="file" id="formFile" name="myFile" required>
+  <button class="btn btn-success w-100 mb-2">Subir imagen</button>
+</form>
+

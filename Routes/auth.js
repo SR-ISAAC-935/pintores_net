@@ -2,6 +2,7 @@ const express= require('express');
 const{body}=require('express-validator')
 const { loginForm, registerForm, registerUser,confirmarCuenta,loginUser, cerrarsesion } = require('../Controllers/authControllers');
 const { leermispublicaciones } = require('../Controllers/homeControllers');
+const { cargaBusqueda, cargarperfilajeno, obtenerSugerencias, alertamasaya } = require('../Controllers/ProfileControllers');
 const router= express.Router();
 
 router.get('/login',loginForm)
@@ -25,4 +26,8 @@ router.get('/register',registerForm)
 router.get('/Confirmar/:token',confirmarCuenta)
 router.get('/logout',cerrarsesion)
 router.get('/profile',leermispublicaciones)
+
+
+
+
 module.exports= router

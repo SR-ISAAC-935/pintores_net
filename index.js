@@ -1,74 +1,86 @@
-const express= require('express');
-const {create} = require('express-handlebars');
-const session= require('express-session')
-const flash=require('connect-flash');
+const express = require('express');
+const { create } = require('express-handlebars');
+const session = require('express-session');
+const flash = require('connect-flash');
 const passport = require('passport');
-const User=require('./models/users')
-const csrf= require('csurf')
-require('dotenv').config()
-require('./database/db')
+const User = require('./models/users');
+const cors = require('cors');
+const mongosanitize = require('express-mongo-sanitize');
+require('dotenv').config();
 
-const app= express();
+const { main } = require('./database/db');
+const mongoStore = require('connect-mongo');
+const app = express();
 
-app.use(session({
-    secret: 'secret',
-    resave:false,
-    saveUninitialized:false,
-    name:"secret-name-yolo",
+// CORS configuración (descomenta si lo necesitas)
+app.use(cors({
+    credentials: true,
+    origin: process.env.PATHHEROKU || '*',
+    methods: ['GET', 'POST']
 }));
-app.use(flash())
-app.use(passport.initialize())
-app.use(passport.session())
 
-passport.serializeUser((user, done)=>done(null,{id:user._id,userName:user.userName}))
+app.set("trust proxy", 1); // Si estás detrás de un proxy (Heroku o Nginx), habilita esta opción.
 
-passport.deserializeUser( async (user,done)=>{
-    
-    const userdb=await User.findById(user.id)
-    return done(null,{id:userdb._id, username: userdb.userName});
-})
+// Configuración de la sesión
+app.use(session({
+    secret: process.env.SECRET_SESION || "52D5FA11-9E49-49D4-A0FD-394E0D0FE98E", // Cargar desde .env
+    resave: false,
+    saveUninitialized: false,
+    name: "secret-name-yolo", // Nombre personalizado para la cookie de la sesión
+    store: mongoStore.create({
+        clientPromise: main,  // Promesa de conexión a MongoDB
+        dbName: process.env.BD_NAME  // Nombre de la base de datos
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 días de duración
+    }
+}));
 
-/*
-app.get('/mensaje-flash',(req, res)=>
-{
-    res.json(req.flash('mensaje'))
-})
-app.get('/crear-mensaje',(req,res)=>
-{
-    req.flash('mensaje','mensaje flash creado')
-    res.redirect('/mensaje-flash')
-})
-app.get('/ruta-protegida', (req,res)=>{
-    res.json(req.session.usuario ||'sin sesion usuario')
-})
-app.get('/crear-session',(req, res)=>{
-    req.session.usuario='yolo';
-    res.redirect('/ruta-protegida')
-})*/
-const hbs=create({
-    extname:'hbs',
-    partialsDir:['Views/Components']
+app.use(flash()); // Middleware para mensajes flash
+
+
+
+// Inicialización de Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Serializar y deserializar usuario
+passport.serializeUser((user, done) => done(null, { id: user._id, userName: user.userName }));
+passport.deserializeUser(async (user, done) => {
+    try {
+        const userdb = await User.findById(user.id);
+        return done(null, { id: userdb._id, username: userdb.userName });
+    } catch (err) {
+        return done(err);
+    }
 });
 
-app.engine('hbs',hbs.engine);
-app.set('view engine','hbs');
-app.set('Views','./Views')
-app.use(express.urlencoded({extended:false}))
-app.use(csrf())
+// Configuración de Handlebars
+const hbs = create({
+    extname: 'hbs',
+    partialsDir: ['Views/Components']
+});
+app.engine('hbs', hbs.engine);
+app.set('view engine', 'hbs');
+app.set('Views', './Views');
 
-app.use((req,res, next)=>{
-    res.locals.csrfToken=req.csrfToken();
-    console.log(req.csrfToken());
-    res.locals.mensajes= req.flash("mensajes");
-    next();
-})
+// Middleware para leer datos del formulario
+app.use(express.urlencoded({ extended: false }));
 
-app.use(express.json())
-app.use('/', require('./Routes/homeRoutes'))
-app.use('/auth', require('./Routes/auth'))
-    
-app.use(express.static(__dirname + '/public'))
-const PORT= process.env.PORT
-app.listen(PORT,()=>{
-    console.log(`escuchando en el puerto http://localhost:${PORT}`)
-})
+// Middleware para manejar JSON
+app.use(express.json());
+app.use(mongosanitize()); // Evitar inyecciones en MongoDB
+
+// Rutas principales
+app.use('/', require('./Routes/homeRoutes'));
+app.use('/auth', require('./Routes/auth'));
+
+// Archivos estáticos
+app.use(express.static(__dirname + '/public'));
+
+// Levantar el servidor
+const PORT = process.env.PORT || 3000; // Puerto
+app.listen(PORT, () => {
+    console.log(`Escuchando en el puerto http://localhost:${PORT}`);
+});
