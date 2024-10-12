@@ -11,7 +11,7 @@ const cargaBusqueda = async (req, res) => {
         });
 
         // Enviamos el array completo de usuarios a la vista
-        res.render('buscando', { 
+        res.render('sugerido', { 
             mensajes: req.flash("mensajes"), 
             usuarios: usuarios 
         });

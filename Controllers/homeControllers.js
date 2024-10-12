@@ -8,7 +8,7 @@ const formidable = require('formidable');
 const users = require('../models/users');
 const leerPublicaciones = async (req, res) => {
     try {
-        const urls = await Publics.find().lean(); // Cargar todas las publicaciones
+        const urls = await Publics.find().lean().populate('user'); // Cargar todas las publicaciones
         const user = await users.findById(req.user.id).lean(); // Cargar el usuario actual
         // Obtener mensajes de flash
         const successMessage = req.flash('success');
@@ -153,7 +153,7 @@ const PintoresPost = async (req, res) => {
             const publics = new Publics({
                 name: Names || "pablitos",
                 Imagen: processedImages,
-                user: req.user.id
+                user:req.user.id 
             });
 
             await publics.save();

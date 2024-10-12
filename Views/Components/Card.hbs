@@ -7,7 +7,7 @@
                 <img src="/Publicaciones/artesymas/{{this}}" alt="Imagen de la publicación" style="width: 400px; height: 400px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
             </a>
         {{/each}}
-        <p>Teléfono: {{this.telefono}}</p> <!-- Aquí se muestra el número de teléfono -->
-      <a href="https://wa.me/{{this.telefono}} " target="_blank">Enviar mensaje a {{this.userName}}</a>
+        <p>Teléfono: {{this.user.telefono}}</p> <!-- Aquí se muestra el número de teléfono -->
+      <a href="https://wa.me/{{this.user.telefono}} " target="_blank">Enviar mensaje a {{this.user.userName}}</a>
     </div>
 </article>

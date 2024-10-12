@@ -13,8 +13,8 @@ router.get('/eliminar/:id', VerificarUser, eliminarPost);
 router.get('/editar/:id', VerificarUser, editarPostForm);
 router.post('/editar/:id', VerificarUser, urlValidator, editarPosting);
 router.get('/profile', VerificarUser, cargarPerfil);
-router.post('/updateProfile', VerificarUser, Perfil);/*
+router.post('/updateProfile', VerificarUser, Perfil);
 router.get('/buscarUsuarios', VerificarUser, cargaBusqueda);
 router.get('/sugerencias', VerificarUser, obtenerSugerencias); // Nueva ruta para sugerencias
-router.get('/:id', VerificarUser, cargarperfilajeno);*/
+router.get('/:id', VerificarUser, cargarperfilajeno);
 module.exports=  router
